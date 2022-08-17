@@ -11,12 +11,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProducerRabbitMQ implements AmqpProducer<MessageQueue> {
 
-    // inserir nossa implementação aqui ...
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.request.routing-key.producer}")
+    private String queue;
+
+    @Value("${spring.rabbitmq.request.exchenge.producer}")
+    private String exchange;
 
     @Override
-    public void producer(MessageQueue messageQueue) {
-
+    public void producer(MessageQueue message) {
+        try {
+            rabbitTemplate.convertAndSend(exchange, queue, message);
+        } catch (Exception ex) {
+            throw new AmqpRejectAndDontRequeueException(ex);
+        }
     }
 }
-
-

@@ -15,8 +15,32 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 @Configuration
 public class RabbitConfiguration {
 
- // Vamos criar as nossas configurações aqui ....
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
+    @Bean
+    public SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory() {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(jacksonConverter());
+        return factory;
+    }
 
+    @Bean
+    public RabbitTemplate rabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jacksonConverter());
+        return rabbitTemplate;
+    }
+
+    @Bean
+    Jackson2JsonMessageConverter jacksonConverter() {
+        final ObjectMapper mapper = Jackson2ObjectMapperBuilder
+                .json()
+                .modules(new JavaTimeModule())
+                .dateFormat(new StdDateFormat())
+                .build();
+        return new Jackson2JsonMessageConverter(mapper);
+    }
 
 }

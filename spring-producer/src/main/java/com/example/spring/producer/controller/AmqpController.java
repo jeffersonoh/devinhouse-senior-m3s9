@@ -14,4 +14,15 @@ public class AmqpController {
 
 // nossa implementação aqui ....
 
+
+    @Autowired
+    private AmqpService service;
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/send")
+    public void sendToConsumer(@RequestBody MessageQueue message) {
+        service.sendToConsumer(message);
+    }
+
+
 }

@@ -2,6 +2,16 @@ package com.example.spring.producer.dto;
 
 public class MessageQueue {
 
-    // campos do nosso DTO aqui ...
+    private String text;
+
+    public MessageQueue() {}
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
 }
