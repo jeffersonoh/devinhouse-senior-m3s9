@@ -29,5 +29,22 @@ As mensagens que são publicadas no **broker** e as mensagens que são consumida
 
 O **Exchange** do tipo **Direct** entrega mensagens às filas de acordo com o **routing key** da mensagem. Isto é, se uma fila foi **bounded** (roteada) a um exchange com determinado **routing key** **(binding key)**, toda mensagem que chegar ao broker destinada a um exchange do tipo **Direct** com determinado **routing key**, será redirecionada à fila associada a este mesmo **routing key** (binding key). Este tipo de exchange é utilizado principalmente para a distribuição de tarefas entre diversos consumidores.
 
+![](./doc/images/direct-exchange.png)
+
+### **Topic Exchange**
+
+O **Exchange** do tipo Tópico (**Topic**) é utilizado para comunicação no padrão publica/subscreve (**publish/subscribe**) e, assim, é utilizado para monitorar mensagens de acordo com padrões no **routing key** da mensagem, ou seja, o consumidor pode “escolher” que tipo de mensagem deseja receber e, simetricamente, quem publica a mensagem no Exchange indica um assunto/tópico – através do routing key – ao qual a mensagem se refere.
+
+Como um exemplo de aplicação, suponha que gostaríamos de implementar um sistema de logs no qual os consumidores monitoram mensagens de log de diferentes origens/módulos (kernel do sistema, gerenciamento de usuários, rede) e de diferentes níveis (informação, alertas, erros). Cada mensagem gerada contém tanto a origem (kernel/users/network) como o nível do log (info/warning/error) representados como uma lista de dois elementos (poderiam ser mais!) separados por pontos (“.”) no r**outing key**. Por exemplo, a mensagem que contém o **routing key** igual a “ker.info” representa uma mensagem de log gerada pelo kernel do sistema e representa um nível informacional.
+
+![](./doc/images/topic-exchange.png)
 
 
+
+![](./doc/images/topic2-exchange.png)
+
+Essa figura representa o roteamento para uma mensagem com routing key igual a “users.info”. Observe que, para este caso, o binding key da fila 1 não é satisfeito e, portanto, a mensagem não é entregue ao **consumidor A**
+
+![](./doc/images/topic3-exchange.png)
+
+Essa figura exibe o roteamento para uma mensagem com routing key igual a “kern.warning”. Observe que somente o **Consumidor C** recebe a mensagem, uma vez que é o único consumidor da fila que possui um binding compatível com a mensagem.
